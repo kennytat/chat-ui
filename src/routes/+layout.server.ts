@@ -9,10 +9,9 @@ import { DEFAULT_SETTINGS } from "$lib/types/Settings";
 import {
 	SERPAPI_KEY,
 	SERPER_API_KEY,
-	MESSAGES_BEFORE_LOGIN,
 	YDC_API_KEY,
 } from "$env/static/private";
-
+import { env } from "$env/dynamic/public";
 export const load: LayoutServerLoad = async ({ locals, depends, url }) => {
 	const { conversations } = collections;
 	const urlModel = url.searchParams.get("model");
@@ -57,7 +56,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, url }) => {
 				.toArray()
 		)[0]?.messages ?? 0;
 
-	const messagesBeforeLogin = MESSAGES_BEFORE_LOGIN ? parseInt(MESSAGES_BEFORE_LOGIN) : 0;
+	const messagesBeforeLogin = env.PUBLIC_MESSAGES_BEFORE_LOGIN ? parseInt(env.PUBLIC_MESSAGES_BEFORE_LOGIN) : 0;
 
 	const userHasExceededMessages = messagesBeforeLogin > 0 && totalMessages > messagesBeforeLogin;
 

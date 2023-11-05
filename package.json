@@ -5,13 +5,13 @@
 	"packageManager": "npm@9.5.0",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "svelte-kit sync && vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"test": "MONGODB_URL=mongodb://127.0.0.1:27017/ vitest",
+		"test": "PUBLIC_MONGODB_URL=mongodb://127.0.0.1:27017/ vitest",
 		"updateLocalEnv": "node --loader ts-node/esm scripts/updateLocalEnv.ts",
 		"updateProdEnv": "node --loader ts-node/esm scripts/updateProdEnv.ts"
 	},

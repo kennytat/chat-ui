@@ -41,8 +41,8 @@ The default config for Chat UI is stored in the `.env` file. You will need to ov
 Start by creating a `.env.local` file in the root of the repository. The bare minimum config you need to get Chat UI to run locally is the following:
 
 ```env
-MONGODB_URL=<the URL to your MongoDB instance>
-HF_ACCESS_TOKEN=<your access token>
+PUBLIC_MONGODB_URL=<the URL to your MongoDB instance>
+PUBLIC_HF_ACCESS_TOKEN=<your access token>
 ```
 
 ### Database
@@ -55,9 +55,9 @@ You can use a local MongoDB instance. The easiest way is to spin one up using do
 docker run -d -p 27017:27017 --name mongo-chatui mongo:latest
 ```
 
-In which case the url of your DB will be `MONGODB_URL=mongodb://localhost:27017`.
+In which case the url of your DB will be `PUBLIC_MONGODB_URL=mongodb://localhost:27017`.
 
-Alternatively, you can use a [free MongoDB Atlas](https://www.mongodb.com/pricing) instance for this, Chat UI should fit comfortably within their free tier. After which you can set the `MONGODB_URL` variable in `.env.local` to match your instance.
+Alternatively, you can use a [free MongoDB Atlas](https://www.mongodb.com/pricing) instance for this, Chat UI should fit comfortably within their free tier. After which you can set the `PUBLIC_MONGODB_URL` variable in `.env.local` to match your instance.
 
 ### Hugging Face Access Token
 
@@ -126,10 +126,10 @@ You can enable the web search by adding any of `YDC_API_KEY` ([docs.you.com](htt
 
 ### Custom models
 
-You can customize the parameters passed to the model or even use a new model by updating the `MODELS` variable in your `.env.local`. The default one can be found in `.env` and looks like this :
+You can customize the parameters passed to the model or even use a new model by updating the `PUBLIC_MODELS` variable in your `.env.local`. The default one can be found in `.env` and looks like this :
 
 ```env
-MODELS=`[
+PUBLIC_MODELS=`[
   {
     "name": "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
     "datasetName": "OpenAssistant/oasst1",
@@ -222,7 +222,7 @@ If you want to, instead of hitting models on the Hugging Face Inference API, you
 
 A good option is to hit a [text-generation-inference](https://github.com/huggingface/text-generation-inference) endpoint. This is what is done in the official [Chat UI Spaces Docker template](https://huggingface.co/new-space?template=huggingchat/chat-ui-template) for instance: both this app and a text-generation-inference server run inside the same container.
 
-To do this, you can add your own endpoints to the `MODELS` variable in `.env.local`, by adding an `"endpoints"` key for each model in `MODELS`.
+To do this, you can add your own endpoints to the `PUBLIC_MODELS` variable in `.env.local`, by adding an `"endpoints"` key for each model in `PUBLIC_MODELS`.
 
 ```env
 {

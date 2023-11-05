@@ -1,4 +1,4 @@
-import { HF_ACCESS_TOKEN, MODELS, OLD_MODELS, TASK_MODEL } from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import type { ChatTemplateInput } from "$lib/types/Template";
 import { compileTemplate } from "$lib/utils/template";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const sagemakerEndpoint = z.object({
 const tgiEndpoint = z.object({
 	host: z.union([z.literal("tgi"), z.undefined()]),
 	url: z.string().url(),
-	authorization: z.string().min(1).default(`Bearer ${HF_ACCESS_TOKEN}`),
+	authorization: z.string().min(1).default(`Bearer ${env.PUBLIC_HF_ACCESS_TOKEN}`),
 });
 
 const commonEndpoint = z.object({
@@ -59,11 +59,11 @@ const modelConfig = z.object({
 		.string()
 		.default(
 			"{{preprompt}}" +
-				"{{#each messages}}" +
-				"{{#ifUser}}{{@root.userMessageToken}}{{content}}{{@root.userMessageEndToken}}{{/ifUser}}" +
-				"{{#ifAssistant}}{{@root.assistantMessageToken}}{{content}}{{@root.assistantMessageEndToken}}{{/ifAssistant}}" +
-				"{{/each}}" +
-				"{{assistantMessageToken}}"
+			"{{#each messages}}" +
+			"{{#ifUser}}{{@root.userMessageToken}}{{content}}{{@root.userMessageEndToken}}{{/ifUser}}" +
+			"{{#ifAssistant}}{{@root.assistantMessageToken}}{{content}}{{@root.assistantMessageEndToken}}{{/ifAssistant}}" +
+			"{{/each}}" +
+			"{{assistantMessageToken}}"
 		),
 	promptExamples: z
 		.array(
@@ -84,8 +84,9 @@ const modelConfig = z.object({
 		.passthrough()
 		.optional(),
 });
+console.log("env.PUBLIC_MODELS::", env);
 
-const modelsRaw = z.array(modelConfig).parse(JSON.parse(MODELS));
+const modelsRaw = z.array(modelConfig).parse(JSON.parse(env.PUBLIC_MODELS));
 
 const processModel = async (m: z.infer<typeof modelConfig>) => ({
 	...m,
@@ -101,17 +102,17 @@ const processModel = async (m: z.infer<typeof modelConfig>) => ({
 export const models = await Promise.all(modelsRaw.map(processModel));
 
 // Models that have been deprecated
-export const oldModels = OLD_MODELS
+export const oldModels = env.PUBLIC_OLD_MODELS
 	? z
-			.array(
-				z.object({
-					id: z.string().optional(),
-					name: z.string().min(1),
-					displayName: z.string().min(1).optional(),
-				})
-			)
-			.parse(JSON.parse(OLD_MODELS))
-			.map((m) => ({ ...m, id: m.id || m.name, displayName: m.displayName || m.name }))
+		.array(
+			z.object({
+				id: z.string().optional(),
+				name: z.string().min(1),
+				displayName: z.string().min(1).optional(),
+			})
+		)
+		.parse(JSON.parse(env.PUBLIC_OLD_MODELS))
+		.map((m) => ({ ...m, id: m.id || m.name, displayName: m.displayName || m.name }))
 	: [];
 
 export const defaultModel = models[0];
@@ -121,10 +122,10 @@ export const validateModel = (_models: BackendModel[]) => {
 	return z.enum([_models[0].id, ..._models.slice(1).map((m) => m.id)]);
 };
 
-// if `TASK_MODEL` is the name of a model we use it, else we try to parse `TASK_MODEL` as a model config itself
-export const smallModel = TASK_MODEL
-	? models.find((m) => m.name === TASK_MODEL) ||
-	  (await processModel(modelConfig.parse(JSON.parse(TASK_MODEL))))
+// if `env.PUBLIC_TASK_MODEL` is the name of a model we use it, else we try to parse `env.PUBLIC_TASK_MODEL` as a model config itself
+export const smallModel = env.PUBLIC_TASK_MODEL
+	? models.find((m) => m.name === env.PUBLIC_TASK_MODEL) ||
+	(await processModel(modelConfig.parse(JSON.parse(env.PUBLIC_TASK_MODEL))))
 	: defaultModel;
 
 export type BackendModel = Optional<(typeof models)[0], "preprompt" | "parameters">;

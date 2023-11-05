@@ -4,7 +4,7 @@
 
 	import Logo from "$lib/components/icons/Logo.svelte";
 	import { switchTheme } from "$lib/switchTheme";
-	import { PUBLIC_APP_NAME, PUBLIC_ORIGIN } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import NavConversationItem from "./NavConversationItem.svelte";
 	import type { LayoutData } from "../../routes/$types";
 
@@ -24,9 +24,9 @@
 </script>
 
 <div class="sticky top-0 flex flex-none items-center justify-between px-3 py-3.5 max-sm:pt-0">
-	<a class="flex items-center rounded-xl text-lg font-semibold" href="{PUBLIC_ORIGIN}{base}/">
+	<a class="flex items-center rounded-xl text-lg font-semibold" href="{env.PUBLIC_ORIGIN}{base}/">
 		<Logo classNames="mr-1" />
-		{PUBLIC_APP_NAME}
+		{env.PUBLIC_APP_NAME}
 	</a>
 	<a
 		href={`${base}/`}
@@ -87,7 +87,7 @@
 	>
 		Settings
 	</button>
-	{#if PUBLIC_APP_NAME === "HuggingChat"}
+	{#if env.PUBLIC_APP_NAME === "HuggingChat"}
 		<a
 			href="https://huggingface.co/spaces/huggingchat/chat-ui/discussions"
 			target="_blank"

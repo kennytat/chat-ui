@@ -1,4 +1,4 @@
-import { HF_ACCESS_TOKEN, MESSAGES_BEFORE_LOGIN, RATE_LIMIT } from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import { buildPrompt } from "$lib/buildPrompt";
 import { PUBLIC_SEP_TOKEN } from "$lib/constants/publicSepToken";
 import { authCondition, requiresUser } from "$lib/server/auth";
@@ -53,7 +53,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 	if (
 		!locals.user?._id &&
 		requiresUser &&
-		(MESSAGES_BEFORE_LOGIN ? parseInt(MESSAGES_BEFORE_LOGIN) : 0) > 0
+		(env.PUBLIC_MESSAGES_BEFORE_LOGIN ? parseInt(env.PUBLIC_MESSAGES_BEFORE_LOGIN) : 0) > 0
 	) {
 		const totalMessages =
 			(
@@ -68,7 +68,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 					.toArray()
 			)[0]?.messages ?? 0;
 
-		if (totalMessages > parseInt(MESSAGES_BEFORE_LOGIN)) {
+		if (totalMessages > parseInt(env.PUBLIC_MESSAGES_BEFORE_LOGIN)) {
 			throw error(429, "Exceeded number of messages before login");
 		}
 	}
@@ -79,7 +79,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 		await collections.messageEvents.countDocuments({ ip: getClientAddress() })
 	);
 
-	if (RATE_LIMIT != "" && nEvents > parseInt(RATE_LIMIT)) {
+	if (env.PUBLIC_RATE_LIMIT != "" && nEvents > parseInt(env.PUBLIC_RATE_LIMIT)) {
 		throw error(429, ERROR_MESSAGES.rateLimited);
 	}
 
@@ -270,7 +270,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 					},
 					model: randomEndpoint.url,
 					inputs: prompt,
-					accessToken: randomEndpoint.host === "sagemaker" ? undefined : HF_ACCESS_TOKEN,
+					accessToken: randomEndpoint.host === "sagemaker" ? undefined : env.PUBLIC_HF_ACCESS_TOKEN,
 				},
 				{
 					use_cache: false,

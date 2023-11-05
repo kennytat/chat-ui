@@ -1,5 +1,4 @@
 import {
-	HF_ACCESS_TOKEN,
 	HF_API_ROOT,
 	USE_CLIENT_CERTIFICATE,
 	CERT_PATH,
@@ -8,6 +7,7 @@ import {
 	CLIENT_KEY_PASSWORD,
 	REJECT_UNAUTHORIZED,
 } from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import { sum } from "$lib/utils/sum";
 import type { BackendModel, Endpoint } from "./models";
 
@@ -31,7 +31,7 @@ export function modelEndpoint(model: BackendModel): Endpoint {
 		return {
 			host: "tgi",
 			url: `${HF_API_ROOT}/${model.name}`,
-			authorization: `Bearer ${HF_ACCESS_TOKEN}`,
+			authorization: `Bearer ${env.PUBLIC_HF_ACCESS_TOKEN}`,
 			weight: 1,
 		};
 	}

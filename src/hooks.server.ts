@@ -1,10 +1,6 @@
-import { COOKIE_NAME, MESSAGES_BEFORE_LOGIN } from "$env/static/private";
+import { COOKIE_NAME } from "$env/static/private";
 import type { Handle } from "@sveltejs/kit";
-import {
-	PUBLIC_GOOGLE_ANALYTICS_ID,
-	PUBLIC_ORIGIN,
-	PUBLIC_APP_DISCLAIMER,
-} from "$env/static/public";
+import { env } from "$env/dynamic/public";
 import { collections } from "$lib/server/database";
 import { base } from "$app/paths";
 import { refreshSessionCookie, requiresUser } from "$lib/server/auth";
@@ -50,7 +46,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		const validOrigins = [
 			new URL(event.request.url).origin,
-			...(PUBLIC_ORIGIN ? [new URL(PUBLIC_ORIGIN).origin] : []),
+			...(env.PUBLIC_ORIGIN ? [new URL(env.PUBLIC_ORIGIN).origin] : []),
 		];
 
 		if (!validOrigins.includes(new URL(referer).origin)) {
@@ -66,18 +62,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (
 			!user &&
 			requiresUser &&
-			!((MESSAGES_BEFORE_LOGIN ? parseInt(MESSAGES_BEFORE_LOGIN) : 0) > 0)
+			!((env.PUBLIC_MESSAGES_BEFORE_LOGIN ? parseInt(env.PUBLIC_MESSAGES_BEFORE_LOGIN) : 0) > 0)
 		) {
 			return errorResponse(401, ERROR_MESSAGES.authOnly);
 		}
 
-		// if login is not required and the call is not from /settings and we display the ethics modal with PUBLIC_APP_DISCLAIMER
+		// if login is not required and the call is not from /settings and we display the ethics modal with env.PUBLIC_APP_DISCLAIMER
 		//  we check if the user has accepted the ethics modal first.
 		// If login is required, `ethicsModalAcceptedAt` is already true at this point, so do not pass this condition. This saves a DB call.
 		if (
 			!requiresUser &&
 			!event.url.pathname.startsWith(`${base}/settings`) &&
-			!!PUBLIC_APP_DISCLAIMER
+			!!env.PUBLIC_APP_DISCLAIMER
 		) {
 			const hasAcceptedEthicsModal = await collections.settings.countDocuments({
 				sessionId: event.locals.sessionId,
@@ -102,7 +98,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 			replaced = true;
 
-			return chunk.html.replace("%gaId%", PUBLIC_GOOGLE_ANALYTICS_ID);
+			return chunk.html.replace("%gaId%", env.PUBLIC_GOOGLE_ANALYTICS_ID);
 		},
 	});
 

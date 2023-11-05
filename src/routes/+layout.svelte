@@ -4,7 +4,6 @@
 	import { page } from "$app/stores";
 	import "../styles/main.css";
 	import { base } from "$app/paths";
-	import { PUBLIC_ORIGIN } from "$env/static/public";
 
 	import { shareConversation } from "$lib/shareConversation";
 	import { UrlDependency } from "$lib/types/UrlDependency";
@@ -14,7 +13,7 @@
 	import NavMenu from "$lib/components/NavMenu.svelte";
 	import Toast from "$lib/components/Toast.svelte";
 	import SettingsModal from "$lib/components/SettingsModal.svelte";
-	import { PUBLIC_APP_ASSETS, PUBLIC_APP_NAME } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import titleUpdate from "$lib/stores/titleUpdate";
 
 	export let data;
@@ -107,34 +106,34 @@
 </script>
 
 <svelte:head>
-	<title>{PUBLIC_APP_NAME}</title>
+	<title>{env.PUBLIC_APP_NAME}</title>
 	<meta name="description" content="The first open source alternative to ChatGPT. 💪" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@huggingface" />
-	<meta property="og:title" content={PUBLIC_APP_NAME} />
+	<meta property="og:title" content={env.PUBLIC_APP_NAME} />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="{PUBLIC_ORIGIN || $page.url.origin}{base}" />
+	<meta property="og:url" content="{env.PUBLIC_ORIGIN || $page.url.origin}{base}" />
 	<meta
 		property="og:image"
-		content="{PUBLIC_ORIGIN || $page.url.origin}{base}/{PUBLIC_APP_ASSETS}/thumbnail.png"
+		content="{env.PUBLIC_ORIGIN || $page.url.origin}{base}/{env.PUBLIC_APP_ASSETS}/thumbnail.png"
 	/>
 	<link
 		rel="icon"
-		href="{PUBLIC_ORIGIN || $page.url.origin}{base}/{PUBLIC_APP_ASSETS}/favicon.ico"
+		href="{env.PUBLIC_ORIGIN || $page.url.origin}{base}/{env.PUBLIC_APP_ASSETS}/favicon.ico"
 		sizes="32x32"
 	/>
 	<link
 		rel="icon"
-		href="{PUBLIC_ORIGIN || $page.url.origin}{base}/{PUBLIC_APP_ASSETS}/icon.svg"
+		href="{env.PUBLIC_ORIGIN || $page.url.origin}{base}/{env.PUBLIC_APP_ASSETS}/icon.svg"
 		type="image/svg+xml"
 	/>
 	<link
 		rel="apple-touch-icon"
-		href="{PUBLIC_ORIGIN || $page.url.origin}{base}/{PUBLIC_APP_ASSETS}/apple-touch-icon.png"
+		href="{env.PUBLIC_ORIGIN || $page.url.origin}{base}/{env.PUBLIC_APP_ASSETS}/apple-touch-icon.png"
 	/>
 	<link
 		rel="manifest"
-		href="{PUBLIC_ORIGIN || $page.url.origin}{base}/{PUBLIC_APP_ASSETS}/manifest.json"
+		href="{env.PUBLIC_ORIGIN || $page.url.origin}{base}/{env.PUBLIC_APP_ASSETS}/manifest.json"
 	/>
 </svelte:head>
 
