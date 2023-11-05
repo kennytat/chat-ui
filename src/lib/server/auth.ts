@@ -8,8 +8,8 @@ import {
 	OPENID_SCOPES,
 	OPENID_TOLERANCE,
 	OPENID_RESOURCE,
-	OPENID_CONFIG,
 } from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import { sha256 } from "$lib/utils/sha256";
 import { z } from "zod";
 import { dev } from "$app/environment";
@@ -39,7 +39,7 @@ const OIDConfig = z
 		TOLERANCE: stringWithDefault(OPENID_TOLERANCE),
 		RESOURCE: stringWithDefault(OPENID_RESOURCE),
 	})
-	.parse(JSON.parse(OPENID_CONFIG));
+	.parse(JSON.parse(env.PUBLIC_OPENID_CONFIG));
 
 export const requiresUser = !!OIDConfig.CLIENT_ID && !!OIDConfig.CLIENT_SECRET;
 

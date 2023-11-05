@@ -84,7 +84,6 @@ const modelConfig = z.object({
 		.passthrough()
 		.optional(),
 });
-console.log("env.PUBLIC_MODELS::", env);
 
 const modelsRaw = z.array(modelConfig).parse(JSON.parse(env.PUBLIC_MODELS));
 

@@ -1,23 +1,23 @@
 import type { YouWebSearch } from "../../types/WebSearch";
 import { WebSearchProvider } from "../../types/WebSearch";
-import { SERPAPI_KEY, SERPER_API_KEY, YDC_API_KEY } from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import { getJson } from "serpapi";
 import type { GoogleParameters } from "serpapi";
 
 // get which SERP api is providing web results
 export function getWebSearchProvider() {
-	return YDC_API_KEY ? WebSearchProvider.YOU : WebSearchProvider.GOOGLE;
+	return env.PUBLIC_YDC_API_KEY ? WebSearchProvider.YOU : WebSearchProvider.GOOGLE;
 }
 
 // Show result as JSON
 export async function searchWeb(query: string) {
-	if (SERPER_API_KEY) {
+	if (env.PUBLIC_SERPER_API_KEY) {
 		return await searchWebSerper(query);
 	}
-	if (YDC_API_KEY) {
+	if (env.PUBLIC_YDC_API_KEY) {
 		return await searchWebYouApi(query);
 	}
-	if (SERPAPI_KEY) {
+	if (env.PUBLIC_SERPAPI_KEY) {
 		return await searchWebSerpApi(query);
 	}
 	throw new Error("No You.com or Serper.dev or SerpAPI key found");
@@ -34,7 +34,7 @@ export async function searchWebSerper(query: string) {
 		method: "POST",
 		body: JSON.stringify(params),
 		headers: {
-			"x-api-key": SERPER_API_KEY,
+			"x-api-key": env.PUBLIC_SERPER_API_KEY,
 			"Content-type": "application/json; charset=UTF-8",
 		},
 	});
@@ -45,7 +45,7 @@ export async function searchWebSerper(query: string) {
 	if (!response.ok) {
 		throw new Error(
 			data["message"] ??
-				`Serper API returned error code ${response.status} - ${response.statusText}`
+			`Serper API returned error code ${response.status} - ${response.statusText}`
 		);
 	}
 
@@ -60,7 +60,7 @@ export async function searchWebSerpApi(query: string) {
 		hl: "en",
 		gl: "us",
 		google_domain: "google.com",
-		api_key: SERPAPI_KEY,
+		api_key: env.PUBLIC_SERPAPI_KEY,
 	} satisfies GoogleParameters;
 
 	// Show result as JSON
@@ -73,7 +73,7 @@ export async function searchWebYouApi(query: string) {
 	const response = await fetch(`https://api.ydc-index.io/search?query=${query}`, {
 		method: "GET",
 		headers: {
-			"X-API-Key": YDC_API_KEY,
+			"X-API-Key": env.PUBLIC_YDC_API_KEY,
 			"Content-type": "application/json; charset=UTF-8",
 		},
 	});

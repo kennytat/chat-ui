@@ -89,7 +89,7 @@ Chat UI features a powerful Web Search feature. It works by:
 The login feature is disabled by default and users are attributed a unique ID based on their browser. But if you want to use OpenID to authenticate your users, you can add the following to your `.env.local` file:
 
 ```env
-OPENID_CONFIG=`{
+PUBLIC_OPENID_CONFIG=`{
   PROVIDER_URL: "<your OIDC issuer>",
   CLIENT_ID: "<your OIDC client ID>",
   CLIENT_SECRET: "<your OIDC client secret>",
@@ -122,7 +122,7 @@ PUBLIC_APP_DISCLAIMER=
 
 ### Web Search config
 
-You can enable the web search by adding any of `YDC_API_KEY` ([docs.you.com](https://docs.you.com)) or `SERPER_API_KEY` ([serper.dev](https://serper.dev/)) or `SERPAPI_KEY` ([serpapi.com](https://serpapi.com/)) to your `.env.local`.
+You can enable the web search by adding any of `PUBLIC_YDC_API_KEY` ([docs.you.com](https://docs.you.com)) or `PUBLIC_SERPER_API_KEY` ([serper.dev](https://serper.dev/)) or `PUBLIC_SERPAPI_KEY` ([serpapi.com](https://serpapi.com/)) to your `.env.local`.
 
 ### Custom models
 
