@@ -26,9 +26,9 @@ export async function updateUser(params: {
 			sub: z.string(),
 			email: z.string().email().optional(),
 		})
-		.refine((data) => data.preferred_username || data.email, {
-			message: "Either preferred_username or email must be provided by the provider.",
-		})
+		// .refine((data) => data.preferred_username || data.email, {
+		// 	message: "Either preferred_username or email must be provided by the provider.",
+		// })
 		.parse(userData);
 
 	const existingUser = await collections.users.findOne({ hfUserId });

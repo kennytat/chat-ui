@@ -1,8 +1,4 @@
-import {
-	PARQUET_EXPORT_DATASET,
-	PARQUET_EXPORT_HF_TOKEN,
-	PARQUET_EXPORT_SECRET,
-} from "$env/static/private";
+import { env } from "$env/dynamic/public";
 import { collections } from "$lib/server/database";
 import type { Message } from "$lib/types/Message";
 import { error } from "@sveltejs/kit";
@@ -13,14 +9,14 @@ import parquet from "parquetjs";
 import { z } from "zod";
 
 // Triger like this:
-// curl -X POST "http://localhost:5173/chat/admin/export" -H "Authorization: Bearer <PARQUET_EXPORT_SECRET>" -H "Content-Type: application/json" -d '{"model": "OpenAssistant/oasst-sft-6-llama-30b-xor"}'
+// curl -X POST "http://localhost:5173/chat/admin/export" -H "Authorization: Bearer <env.PUBLIC_PARQUET_EXPORT_SECRET>" -H "Content-Type: application/json" -d '{"model": "OpenAssistant/oasst-sft-6-llama-30b-xor"}'
 
 export async function POST({ request }) {
-	if (!PARQUET_EXPORT_SECRET || !PARQUET_EXPORT_DATASET || !PARQUET_EXPORT_HF_TOKEN) {
+	if (!env.PUBLIC_PARQUET_EXPORT_SECRET || !env.PUBLIC_PARQUET_EXPORT_DATASET || !env.PUBLIC_PARQUET_EXPORT_HF_TOKEN) {
 		throw error(500, "Parquet export is not configured.");
 	}
 
-	if (request.headers.get("Authorization") !== `Bearer ${PARQUET_EXPORT_SECRET}`) {
+	if (request.headers.get("Authorization") !== `Bearer ${env.PUBLIC_PARQUET_EXPORT_SECRET}`) {
 		throw error(403);
 	}
 
@@ -151,10 +147,10 @@ export async function POST({ request }) {
 
 	await uploadFile({
 		file: pathToFileURL(fileName) as URL,
-		credentials: { accessToken: PARQUET_EXPORT_HF_TOKEN },
+		credentials: { accessToken: env.PUBLIC_PARQUET_EXPORT_HF_TOKEN },
 		repo: {
 			type: "dataset",
-			name: PARQUET_EXPORT_DATASET,
+			name: env.PUBLIC_PARQUET_EXPORT_DATASET,
 		},
 	});
 
